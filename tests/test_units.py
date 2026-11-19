@@ -104,3 +104,96 @@ def test_answer_maps_citations_to_sources(monkeypatch):
     ]
     assert bad == [9]
     assert retrieved == fake
+
+
+# ---------- coverage of edge branches ----------
+
+def test_split_skips_empty_paragraphs():
+    text = "A" * 300 + "\n\n\n\n" + "B" * 300  # "\n\n\n\n" leaves an empty piece
+    first, second = _split(text)
+    assert first == "A" * 300
+    # piece 2 = overlap tail of piece 1 + "\n\n" + B's; the empty piece is gone
+    assert second == "A" * config.CHUNK_OVERLAP + "\n\n" + "B" * 300
+
+
+def test_rerank_empty_candidates():
+    from src.rerank import rerank
+
+    assert rerank("any question", []) == []
+
+
+def test_fmt_score():
+    from src.rerank import fmt_score
+
+    assert fmt_score(1.059) == "ce=1.06"
+    assert fmt_score(-11.18) == "ce=-11.18"
+
+
+def test_retrieve_unknown_mode_raises():
+    with pytest.raises(ValueError, match="unknown mode"):
+        rag.retrieve(object(), "question", mode="nope")
+
+
+def test_get_collection_builds_index_when_missing(monkeypatch):
+    class FakeClient:
+        def __init__(self, path):
+            pass
+
+        def list_collections(self):
+            return []
+
+    built = object()
+    monkeypatch.setattr(rag.chromadb, "PersistentClient", FakeClient)
+    monkeypatch.setattr(rag, "build_index", lambda: (built, []))
+    assert rag.get_collection() is built
+
+
+# ---------- rag CLI ----------
+
+RETRIEVED = [
+    (0.5, {"doc_name": "expense_policy.md", "section": "EXP-204 Lodging",
+           "chunk_id": "expense_policy.md#5"}, "chunk text"),
+]
+
+
+def _fake_answer(sources, bad, calls):
+    def fake(question, mode="rerank", collection=None):
+        calls.append((question, mode))
+        return "Fake answer [1]", sources, RETRIEVED, bad
+    return fake
+
+
+def test_main_prints_all_sections(monkeypatch, capsys):
+    calls = []
+    sources = [{"n": 1, "doc_name": "expense_policy.md", "section": "EXP-204 Lodging"}]
+    monkeypatch.setattr(rag, "answer", _fake_answer(sources, [7], calls))
+
+    rag.main(["What", "is", "the", "lodging", "limit?"])
+    out = capsys.readouterr().out
+
+    assert calls == [("What is the lodging limit?", "rerank")]
+    assert "Question: What is the lodging limit?  (mode=rerank)" in out
+    assert "Answer:\nFake answer [1]" in out
+    assert "Sources:\n  [1] expense_policy.md § EXP-204 Lodging" in out
+    assert "WARNING: cited [7]" in out
+    assert "Retrieved:\n  [1] ce=0.50  expense_policy.md#5 § EXP-204 Lodging" in out
+
+
+def test_main_mode_dense_and_no_sources(monkeypatch, capsys):
+    calls = []
+    monkeypatch.setattr(rag, "answer", _fake_answer([], [], calls))
+
+    rag.main(["--mode", "dense", "Some question"])
+    out = capsys.readouterr().out
+
+    assert calls == [("Some question", "dense")]
+    assert "(mode=dense)" in out
+    assert "(none cited)" in out
+    assert "[1] distance=0.5000  expense_policy.md#5" in out
+
+
+def test_main_default_question(monkeypatch, capsys):
+    calls = []
+    monkeypatch.setattr(rag, "answer", _fake_answer([], [], calls))
+    rag.main([])
+    assert calls == [("What is the lodging limit in high-cost cities?", "rerank")]

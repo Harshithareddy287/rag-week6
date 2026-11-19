@@ -62,8 +62,9 @@ def answer(question, mode="rerank", collection=None):
     return text, sources, retrieved, bad
 
 
-if __name__ == "__main__":
-    args, mode = sys.argv[1:], "rerank"
+def main(argv=None):
+    """CLI: python -m src.rag [--mode rerank|hybrid|dense] "question"."""
+    args, mode = sys.argv[1:] if argv is None else argv, "rerank"
     if args[:1] == ["--mode"]:
         mode, args = args[1], args[2:]
     question = " ".join(args) or "What is the lodging limit in high-cost cities?"
@@ -84,3 +85,7 @@ if __name__ == "__main__":
         shown = {"dense": f"distance={score:.4f}", "hybrid": f"rrf={score:.4f}",
                  "rerank": fmt_score(score)}[mode]
         print(f"  [{i}] {shown}  {meta['chunk_id']} § {meta['section']}")
+
+
+if __name__ == "__main__":
+    main()

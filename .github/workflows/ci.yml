@@ -25,4 +25,4 @@ jobs:
       - name: Build index
         run: python -m src.index
       - name: Run tests
-        run: pytest -v
+        run: pytest --cov=src --cov-report=term-missing --cov-fail-under=90
