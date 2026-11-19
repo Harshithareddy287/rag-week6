@@ -1,7 +1,6 @@
 import chromadb
-from sentence_transformers import SentenceTransformer
 
-from src import config
+from src.embeddings import embed
 
 PTO_TEXT = "Employees earn 20 days of paid time off per year."
 HOTEL_TEXT = "Hotel stays are reimbursed up to $250 per night."
@@ -14,8 +13,6 @@ QUERIES = [
 
 
 def run_minimal_loop():
-    model = SentenceTransformer(config.EMBEDDING_MODEL)
-
     client = chromadb.EphemeralClient()
     collection = client.create_collection(
         name="minimal_loop",
@@ -24,19 +21,19 @@ def run_minimal_loop():
     )
 
     # STEP 1: embed and store one text
-    pto_emb = model.encode([PTO_TEXT]).tolist()
+    pto_emb = embed([PTO_TEXT])
     collection.add(ids=["pto"], documents=[PTO_TEXT], embeddings=pto_emb)
     print(f"STEP 1: embedding size = {len(pto_emb[0])}, count = {collection.count()}")
 
     # STEP 2: embed and store a second text
-    hotel_emb = model.encode([HOTEL_TEXT]).tolist()
+    hotel_emb = embed([HOTEL_TEXT])
     collection.add(ids=["hotel"], documents=[HOTEL_TEXT], embeddings=hotel_emb)
     print(f"STEP 2: count = {collection.count()}")
 
     # STEP 3: run each query with the same model
     all_ranked = []
     for label, (query, expected) in zip("AB", QUERIES):
-        query_emb = model.encode([query]).tolist()
+        query_emb = embed([query])
         results = collection.query(query_embeddings=query_emb, n_results=2)
         texts = results["documents"][0]
         distances = results["distances"][0]
