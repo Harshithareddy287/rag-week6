@@ -1,0 +1,99 @@
+[
+  {
+    "id": "q1",
+    "question": "How many PTO days do I get per year?",
+    "expected_sources": [{"doc": "pto_policy_2024.md", "section": "3. PTO Accrual"}],
+    "must_contain": ["20 days", "20 PTO days", "twenty days", "20 paid"],
+    "must_not_contain": ["15"],
+    "conflict": true
+  },
+  {
+    "id": "q2",
+    "question": "How many unused PTO days can I carry over?",
+    "expected_sources": [{"doc": "pto_policy_2024.md", "section": "5. Carryover"}],
+    "must_contain": ["5 days", "5 unused", "up to 5", "five days"],
+    "must_not_contain": ["up to 3", "3 unused", "3 days"],
+    "conflict": true
+  },
+  {
+    "id": "q3",
+    "question": "What is the lodging limit in high-cost cities?",
+    "expected_sources": [
+      {"doc": "expense_policy.md", "section": "EXP-204"},
+      {"doc": "expense_policy.md", "section": "6. Quick Reference"}
+    ],
+    "must_contain": ["350"],
+    "must_not_contain": [],
+    "conflict": false
+  },
+  {
+    "id": "q4",
+    "question": "What does EXP-207 require?",
+    "expected_sources": [{"doc": "expense_policy.md", "section": "EXP-207"}],
+    "must_contain": ["Director"],
+    "must_not_contain": [],
+    "conflict": false
+  },
+  {
+    "id": "q5",
+    "question": "How much can I spend on professional development?",
+    "expected_sources": [{"doc": "expense_policy.md", "section": "EXP-209"}],
+    "must_contain": ["1,000", "1000"],
+    "must_not_contain": [],
+    "conflict": false
+  },
+  {
+    "id": "q6",
+    "question": "Who must approve a fully remote arrangement?",
+    "expected_sources": [{"doc": "remote_work_policy.md", "section": "3. Work Arrangements"}],
+    "must_contain": ["Vice President"],
+    "must_not_contain": [],
+    "conflict": false
+  },
+  {
+    "id": "q7",
+    "question": "What are the core hours for remote employees?",
+    "expected_sources": [{"doc": "remote_work_policy.md", "section": "3. Work Arrangements"}],
+    "must_contain": ["10:00", "10 am", "10am"],
+    "must_not_contain": [],
+    "conflict": false
+  },
+  {
+    "id": "q8",
+    "question": "How quickly must I report a lost laptop?",
+    "expected_sources": [{"doc": "remote_work_policy.md", "section": "5. Security"}],
+    "must_contain": ["24 hours"],
+    "must_not_contain": [],
+    "conflict": false
+  },
+  {
+    "id": "q9",
+    "question": "How many days of bereavement leave do I get for an immediate family member?",
+    "expected_sources": [
+      {"doc": "pto_policy.md", "section": "9. Other Paid Leave"},
+      {"doc": "pto_policy_2024.md", "section": "9. Other Paid Leave"}
+    ],
+    "must_contain": ["5 days", "5 paid days", "five days", "up to 5"],
+    "must_not_contain": [],
+    "conflict": false
+  },
+  {
+    "id": "q10",
+    "question": "What is the mileage reimbursement rate?",
+    "expected_sources": [
+      {"doc": "expense_policy.md", "section": "EXP-205"},
+      {"doc": "expense_policy.md", "section": "6. Quick Reference"}
+    ],
+    "must_contain": ["0.67"],
+    "must_not_contain": [],
+    "conflict": false
+  },
+  {
+    "id": "q11",
+    "question": "What happens if I submit a fake expense?",
+    "expected_sources": [{"doc": "expense_policy.md", "section": "5. Misuse"}],
+    "must_contain": ["disciplinary", "termination"],
+    "must_not_contain": [],
+    "conflict": false
+  }
+]
