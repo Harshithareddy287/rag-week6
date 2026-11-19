@@ -47,6 +47,22 @@ Employees who are required to work on a company holiday because of business need
 
 When an employee leaves the company, any accrued but unused PTO is paid out in their final paycheck, unless local law requires a different approach. Carried-over days that have not been forfeited are included in the payout. Sick leave is not paid out.
 
-## 9. Questions
+## 9. Other Paid Leave
+
+Some types of paid leave are separate from PTO and do not reduce an employee's PTO balance:
+
+- **Bereavement leave:** up to 5 paid days after the death of an immediate family member, and up to 2 paid days for other relatives.
+- **Jury duty:** employees receive their normal pay for the full period of jury service. A copy of the court summons must be uploaded to the HR portal.
+- **Volunteer day:** each full-time employee receives 1 paid volunteer day per year to support a registered charity.
+
+## 10. Blackout Periods
+
+Some teams have blackout periods when PTO is normally not approved. For the Finance team, the blackout period is the last 5 business days of each quarter. For other teams, managers must publish any blackout periods on the team calendar at least 1 month in advance. Employees may still request PTO during a blackout period for urgent personal reasons.
+
+## 11. Manager Responsibilities
+
+Managers are responsible for approving PTO fairly and consistently across their team. They should review their team's PTO balances each quarter and encourage employees with high balances to plan time off. Managers must not discourage employees from taking the PTO they have earned, or contact them about routine work while they are on approved PTO.
+
+## 12. Questions
 
 Questions about this policy should be sent to People Operations through the HR portal.

@@ -25,6 +25,11 @@ The company offers two remote work arrangements:
 
 All remote employees must be available during core hours of 10:00 to 15:00 in their local time zone. Outside core hours, employees may set their own schedule as long as they work their contracted hours and meet team deadlines.
 
+| Arrangement | Remote days | Approval needed | Reviewed |
+|---|---|---|---|
+| Hybrid | Up to 3 per week | Manager and People Operations | Not specified |
+| Fully remote | Every day | Vice President (written) | Every 12 months |
+
 ## 4. Home Office Setup and Equipment (RW-103)
 
 The company provides each approved remote employee with a laptop, one external monitor, a headset, and a keyboard and mouse. Equipment remains company property and must be returned when employment ends or the remote arrangement stops.
@@ -57,6 +62,28 @@ Employees may work temporarily from a location other than their usual home addre
 
 Either the employee or the company may ask to change or end a remote arrangement. The company will normally give at least 30 days' notice before requiring an employee to return to the office, unless there is a performance or security concern.
 
-## 9. Questions
+## 9. Home Office Safety and Ergonomics
+
+Remote employees should set up their workspace with a supportive chair, a desk at a comfortable height, and a monitor placed at eye level. People Operations offers a free virtual ergonomic assessment to any remote employee on request.
+
+Work-related injuries that happen in the home workspace during working hours must be reported to People Operations within 48 hours, in the same way as injuries in the office. The company is not responsible for injuries to family members or visitors in the employee's home.
+
+## 10. Time Tracking and Overtime
+
+Non-exempt employees who work remotely must record their working hours in the HR portal each day, including start time, end time, and breaks. Overtime must be approved by the employee's manager before it is worked. Managers must not ask non-exempt employees to work outside their recorded hours, including answering messages in the evening.
+
+Exempt employees do not record hours but are expected to be available during core hours and to keep their calendar accurate.
+
+## 11. Remote Onboarding
+
+New employees complete their introductory period with regular time in the office, so they can meet their team and learn company processes in person. Each new employee is paired with an onboarding buddy who helps them with tools, contacts, and team routines.
+
+Once the introductory period is complete, the manager and the employee agree on the arrangement that will apply, using the eligibility rules in section 2 (RW-101).
+
+## 12. Equipment Repairs and Replacement
+
+If company equipment stops working, the employee should contact the IT Service Desk, which will arrange a repair or send a replacement. Employees must not open, modify, or have company devices repaired by outside shops. Damage caused by misuse or negligence may have to be paid for by the employee, after a review by IT and People Operations.
+
+## 13. Questions
 
 Questions about this policy should be sent to People Operations through the HR portal.
