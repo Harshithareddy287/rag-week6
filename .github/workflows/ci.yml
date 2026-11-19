@@ -23,5 +23,7 @@ jobs:
         run: pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Build index
+        run: python -m src.index
       - name: Run tests
         run: pytest -v
