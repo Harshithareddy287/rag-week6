@@ -4,8 +4,9 @@ import sys
 import chromadb
 
 from src import config
-from src.index import build_index, search
+from src.index import build_index
 from src.llm import ask
+from src.retrieve import dense_search, hybrid_search
 
 SYSTEM = (
     "You answer questions about company policy. "
@@ -30,9 +31,16 @@ def build_prompt(question, retrieved):
     return f"{SYSTEM}\n\nContext:\n{blocks}\n\nQuestion: {question}\nAnswer:"
 
 
-def answer(question):
-    """Return (answer_text, sources, retrieved, bad_citations)."""
-    retrieved = search(get_collection(), question, k=config.TOP_K)
+def answer(question, mode="hybrid"):
+    """Return (answer_text, sources, retrieved, bad_citations).
+    mode: "hybrid" (vector + keyword, RRF) or "dense" (vector only)."""
+    collection = get_collection()
+    if mode == "hybrid":
+        retrieved = hybrid_search(collection, question, config.TOP_K)
+    elif mode == "dense":
+        retrieved = dense_search(collection, question, config.TOP_K)
+    else:
+        raise ValueError(f"unknown mode: {mode!r}")
     text = ask(build_prompt(question, retrieved))
 
     cited = sorted({int(n) for n in re.findall(r"\[(\d+)\]", text)})
@@ -47,10 +55,13 @@ def answer(question):
 
 
 if __name__ == "__main__":
-    question = " ".join(sys.argv[1:]) or "What is the lodging limit in high-cost cities?"
-    text, sources, retrieved, bad = answer(question)
+    args, mode = sys.argv[1:], "hybrid"
+    if args[:1] == ["--mode"]:
+        mode, args = args[1], args[2:]
+    question = " ".join(args) or "What is the lodging limit in high-cost cities?"
+    text, sources, retrieved, bad = answer(question, mode)
 
-    print(f"Question: {question}\n")
+    print(f"Question: {question}  (mode={mode})\n")
     print(f"Answer:\n{text}\n")
     print("Sources:")
     for s in sources:
@@ -60,6 +71,7 @@ if __name__ == "__main__":
     for n in bad:
         print(f"  WARNING: cited [{n}] but context only has [1]..[{len(retrieved)}]")
 
+    label = "distance" if mode == "dense" else "rrf"
     print("\nRetrieved:")
-    for i, (dist, meta, _) in enumerate(retrieved, start=1):
-        print(f"  [{i}] distance={dist:.4f}  {meta['doc_name']} § {meta['section']}")
+    for i, (score, meta, _) in enumerate(retrieved, start=1):
+        print(f"  [{i}] {label}={score:.4f}  {meta['chunk_id']} § {meta['section']}")
