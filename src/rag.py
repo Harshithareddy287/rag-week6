@@ -33,19 +33,22 @@ def build_prompt(question, retrieved):
     return f"{SYSTEM}\n\nContext:\n{blocks}\n\nQuestion: {question}\nAnswer:"
 
 
-def answer(question, mode="rerank"):
-    """Return (answer_text, sources, retrieved, bad_citations).
+def retrieve(collection, question, mode="rerank"):
+    """Top-k chunks for a question.
     mode: "rerank" (hybrid top 20 -> cross-encoder -> top k),
           "hybrid" (vector + keyword, RRF) or "dense" (vector only)."""
-    collection = get_collection()
     if mode == "rerank":
-        retrieved = rerank(question, hybrid_search(collection, question, 20), config.TOP_K)
-    elif mode == "hybrid":
-        retrieved = hybrid_search(collection, question, config.TOP_K)
-    elif mode == "dense":
-        retrieved = dense_search(collection, question, config.TOP_K)
-    else:
-        raise ValueError(f"unknown mode: {mode!r}")
+        return rerank(question, hybrid_search(collection, question, 20), config.TOP_K)
+    if mode == "hybrid":
+        return hybrid_search(collection, question, config.TOP_K)
+    if mode == "dense":
+        return dense_search(collection, question, config.TOP_K)
+    raise ValueError(f"unknown mode: {mode!r}")
+
+
+def answer(question, mode="rerank", collection=None):
+    """Return (answer_text, sources, retrieved, bad_citations)."""
+    retrieved = retrieve(collection or get_collection(), question, mode)
     text = ask(build_prompt(question, retrieved))
 
     cited = sorted({int(n) for n in re.findall(r"\[(\d+)\]", text)})
