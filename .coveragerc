@@ -1,0 +1,10 @@
+[run]
+omit =
+    src/hybrid_demo.py
+    src/rerank_demo.py
+    src/minimal_loop.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
