@@ -6,13 +6,15 @@ import chromadb
 from src import config
 from src.index import build_index
 from src.llm import ask
+from src.rerank import fmt_score, rerank
 from src.retrieve import dense_search, hybrid_search
 
 SYSTEM = (
     "You answer questions about company policy. "
     "Answer ONLY from the context blocks below. "
     "If the context does not contain the answer, say so. "
-    "Cite the block numbers you used, like [1][3]."
+    "Cite the block numbers you used, like [1][3]. "
+    "Answer in plain text, no markdown."
 )
 
 
@@ -31,11 +33,14 @@ def build_prompt(question, retrieved):
     return f"{SYSTEM}\n\nContext:\n{blocks}\n\nQuestion: {question}\nAnswer:"
 
 
-def answer(question, mode="hybrid"):
+def answer(question, mode="rerank"):
     """Return (answer_text, sources, retrieved, bad_citations).
-    mode: "hybrid" (vector + keyword, RRF) or "dense" (vector only)."""
+    mode: "rerank" (hybrid top 20 -> cross-encoder -> top k),
+          "hybrid" (vector + keyword, RRF) or "dense" (vector only)."""
     collection = get_collection()
-    if mode == "hybrid":
+    if mode == "rerank":
+        retrieved = rerank(question, hybrid_search(collection, question, 20), config.TOP_K)
+    elif mode == "hybrid":
         retrieved = hybrid_search(collection, question, config.TOP_K)
     elif mode == "dense":
         retrieved = dense_search(collection, question, config.TOP_K)
@@ -55,7 +60,7 @@ def answer(question, mode="hybrid"):
 
 
 if __name__ == "__main__":
-    args, mode = sys.argv[1:], "hybrid"
+    args, mode = sys.argv[1:], "rerank"
     if args[:1] == ["--mode"]:
         mode, args = args[1], args[2:]
     question = " ".join(args) or "What is the lodging limit in high-cost cities?"
@@ -71,7 +76,8 @@ if __name__ == "__main__":
     for n in bad:
         print(f"  WARNING: cited [{n}] but context only has [1]..[{len(retrieved)}]")
 
-    label = "distance" if mode == "dense" else "rrf"
     print("\nRetrieved:")
     for i, (score, meta, _) in enumerate(retrieved, start=1):
-        print(f"  [{i}] {label}={score:.4f}  {meta['chunk_id']} § {meta['section']}")
+        shown = {"dense": f"distance={score:.4f}", "hybrid": f"rrf={score:.4f}",
+                 "rerank": fmt_score(score)}[mode]
+        print(f"  [{i}] {shown}  {meta['chunk_id']} § {meta['section']}")
